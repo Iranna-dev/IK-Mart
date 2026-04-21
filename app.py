@@ -44,6 +44,29 @@ app.register_blueprint(admin_bp, url_prefix='/api')
 with app.app_context():
     db.create_all()
 
+    # ✅ Seed products
+    if Product.query.count() == 0:
+        db.session.add(Product(name="Laptop", price=60000, description="Gaming laptop"))
+        db.session.add(Product(name="Phone", price=20000, description="Smartphone"))
+        db.session.add(Product(name="TV", price=30000, description="Smart TV"))
+
+    # ✅ Seed user
+    from models import User
+    from flask_bcrypt import Bcrypt
+
+    bcrypt = Bcrypt(app)
+
+    if User.query.filter_by(email="secure@gmail.com").first() is None:
+        hashed_password = bcrypt.generate_password_hash("1234").decode('utf-8')
+
+        user = User(
+            email="secure@gmail.com",
+            password=hashed_password
+        )
+
+        db.session.add(user)
+
+    db.session.commit()
     if Product.query.count() == 0:
         db.session.add(Product(name="Laptop", price=60000, description="Gaming laptop"))
         db.session.add(Product(name="Phone", price=20000, description="Smartphone"))
