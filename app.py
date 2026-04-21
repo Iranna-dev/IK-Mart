@@ -25,8 +25,16 @@ app.register_blueprint(orders_bp, url_prefix='/api')
 app.register_blueprint(reviews_bp, url_prefix='/api')
 app.register_blueprint(admin_bp, url_prefix='/api')
 
+from models import Product
+
 with app.app_context():
     db.create_all()
+
+    if Product.query.count() == 0:
+        db.session.add(Product(name="Laptop", price=60000, description="Gaming laptop"))
+        db.session.add(Product(name="Phone", price=20000, description="Smartphone"))
+        db.session.add(Product(name="TV", price=30000, description="Smart TV"))
+        db.session.commit()
 
 if __name__ == "__main__":
     app.run()
